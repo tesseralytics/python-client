@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "tessera-api"
 description = "High-performance Python client for the Tessera API — Hyperliquid datasets straight into Polars & DuckDB."
 readme = "README.md"
-license = "MIT"
+license = "GPL-3.0-only"
 requires-python = ">=3.10"
 dynamic = ["version"]
 authors = [{ name = "Tessera", email = "hello@tesseralytics.dev" }]
@@ -27,7 +27,7 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Intended Audience :: Financial and Insurance Industry",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.10",

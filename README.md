@@ -4,10 +4,10 @@
 
 **Clean Hyperliquid market data — straight into Polars & DuckDB.**
 
-[![PyPI](https://img.shields.io/pypi/v/tessera-api.svg)](https://pypi.org/project/tessera-api/)
-[![Python](https://img.shields.io/pypi/pyversions/tessera-api.svg)](https://pypi.org/project/tessera-api/)
+[![PyPI](https://img.shields.io/pypi/v/tessera-api.svg?v=2)](https://pypi.org/project/tessera-api/)
+[![Python](https://img.shields.io/pypi/pyversions/tessera-api.svg?v=2)](https://pypi.org/project/tessera-api/)
 [![CI](https://github.com/tesseralytics/python-client/actions/workflows/ci.yml/badge.svg)](https://github.com/tesseralytics/python-client/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 
 The official Python client for [**Tessera**](https://tesseralytics.dev) — order-flow-enriched
 OHLCV, funding-rate, and positioning datasets built from raw Hyperliquid trade data,
@@ -95,4 +95,4 @@ full column reference and recipes.
 
 ## License
 
-MIT © Tessera. See [LICENSE](LICENSE).
+GPL-3.0 © Tessera. See [LICENSE](LICENSE).
