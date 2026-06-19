@@ -1,12 +1,12 @@
 name: Docs
-
 on:
   push:
     branches: [main]
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+  id-token: write        # was: contents: write  (OIDC instead of gh-pages push)
 
 concurrency:
   group: docs
@@ -17,12 +17,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+        with: { fetch-depth: 0 }
       - name: Install uv
         uses: astral-sh/setup-uv@v5
-        with:
-          enable-cache: true
+        with: { enable-cache: true }
       - run: uv sync --all-extras
-      - name: Deploy to GitHub Pages
-        run: uv run --group docs mkdocs gh-deploy --force
+      - name: Build site
+        run: uv run --group docs mkdocs build --strict   # outputs to site/
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DOCS_ROLE_ARN }}
+          aws-region: ap-northeast-1
+      - name: Sync to S3
+        run: aws s3 sync site/ s3://${{ vars.DOCS_BUCKET }}/python-client/ --delete
+      - name: Invalidate CloudFront
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths '/python-client/*'
