@@ -1,0 +1,63 @@
+site_name: Tessera Python Client
+site_description: Clean Hyperliquid market data straight into Polars & DuckDB.
+site_url: https://tesseralytics.dev/python-client/
+repo_url: https://github.com/tesseralytics/python-client
+repo_name: tesseralytics/python-client
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep purple
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep purple
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - content.code.copy
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+
+nav:
+  - Home: index.md
+  - Quickstart: quickstart.md
+  - Recipes:
+      - Load OHLCV into Polars: recipes/ohlcv-polars.md
+      - Query funding rates with DuckDB: recipes/funding-duckdb.md
+      - Backtesting with CVD & aggressor delta: recipes/orderflow-metrics.md
+  - Datasets: datasets.md
+  - API reference: api.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_root_heading: true
+            show_source: false
+            docstring_style: google
+            members_order: source
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/tesseralytics/python-client
+  generator: false
