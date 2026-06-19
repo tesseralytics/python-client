@@ -1,11 +1,11 @@
 <div align="center">
 
-# tessera-client
+# tessera-api
 
 **Clean Hyperliquid market data — straight into Polars & DuckDB.**
 
-[![PyPI](https://img.shields.io/pypi/v/tessera-client.svg)](https://pypi.org/project/tessera-client/)
-[![Python](https://img.shields.io/pypi/pyversions/tessera-client.svg)](https://pypi.org/project/tessera-client/)
+[![PyPI](https://img.shields.io/pypi/v/tessera-api.svg)](https://pypi.org/project/tessera-api/)
+[![Python](https://img.shields.io/pypi/pyversions/tessera-api.svg)](https://pypi.org/project/tessera-api/)
 [![CI](https://github.com/tesseralytics/python-client/actions/workflows/ci.yml/badge.svg)](https://github.com/tesseralytics/python-client/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -17,7 +17,7 @@ delivered as Parquet over a REST API.
 
 ---
 
-`tessera-client` is built for quants and analysts who would rather write a query than babysit a
+`tessera-api` is built for quants and analysts who would rather write a query than babysit a
 download. Point it at a `(dataset, coin, month)` and get a **Polars `LazyFrame`** or a **DuckDB
 relation** back — read straight from object storage over range requests, with predicate and
 projection pushdown. No temp files, no `pandas` round-trips, no glue code.
@@ -25,9 +25,9 @@ projection pushdown. No temp files, no `pandas` round-trips, no glue code.
 ## Install
 
 ```bash
-pip install "tessera-client[polars]"     # the headline path
-pip install "tessera-client[duckdb]"      # query with SQL instead
-pip install "tessera-client[all]"         # polars + duckdb + pandas escape hatch
+pip install "tessera-api[polars]"     # the headline path
+pip install "tessera-api[duckdb]"      # query with SQL instead
+pip install "tessera-api[all]"         # polars + duckdb + pandas escape hatch
 ```
 
 Grab a free API key (no card required) at **[tesseralytics.dev](https://tesseralytics.dev)** and

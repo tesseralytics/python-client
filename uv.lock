@@ -1506,7 +1506,7 @@ wheels = [
 ]
 
 [[package]]
-name = "tessera-client"
+name = "tessera-api"
 source = { editable = "." }
 dependencies = [
     { name = "httpx" },

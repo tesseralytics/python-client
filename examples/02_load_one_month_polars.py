@@ -3,7 +3,7 @@
 The Parquet is read remotely over range requests — no temp files.
 
 Run:
-    pip install "tessera-client[polars]"
+    pip install "tessera-api[polars]"
     python examples/02_load_one_month_polars.py
 """
 

@@ -20,7 +20,7 @@ def require(module: str, extra: str) -> ModuleType:
     except ImportError as exc:  # pragma: no cover - exercised via monkeypatch
         raise MissingDependencyError(
             f"{module!r} is required for this feature. "
-            f'Install it with: pip install "tessera-client[{extra}]"'
+            f'Install it with: pip install "tessera-api[{extra}]"'
         ) from exc
 
 

@@ -73,7 +73,7 @@ def test_require_missing_dependency(monkeypatch: pytest.MonkeyPatch) -> None:
         raise ImportError("nope")
 
     monkeypatch.setattr("tessera.readers._common.import_module", _fail)
-    with pytest.raises(MissingDependencyError, match=r"tessera-client\[duckdb\]"):
+    with pytest.raises(MissingDependencyError, match=r"tessera-api\[duckdb\]"):
         require("duckdb", "duckdb")
 
 

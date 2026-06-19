@@ -2,7 +2,7 @@
 
 **Clean Hyperliquid market data — straight into Polars & DuckDB.**
 
-`tessera-client` is the official Python client for [Tessera](https://tesseralytics.dev):
+`tessera-api` is the official Python client for [Tessera](https://tesseralytics.dev):
 order-flow-enriched OHLCV, funding-rate, and positioning datasets built from raw Hyperliquid
 trade data and delivered as Parquet over a REST API.
 
@@ -21,9 +21,9 @@ print(df.select("time", "close", "cvd").tail())
 ## Install
 
 ```bash
-pip install "tessera-client[polars]"     # headline path
-pip install "tessera-client[duckdb]"      # query with SQL
-pip install "tessera-client[all]"         # polars + duckdb + pandas
+pip install "tessera-api[polars]"     # headline path
+pip install "tessera-api[duckdb]"      # query with SQL
+pip install "tessera-api[all]"         # polars + duckdb + pandas
 ```
 
 Get a free API key (no card required) at [tesseralytics.dev](https://tesseralytics.dev).

@@ -4,7 +4,7 @@
 row-groups/columns the query needs cross the wire.
 
 Run:
-    pip install "tessera-client[polars]"
+    pip install "tessera-api[polars]"
     python examples/03_multi_month_lazy.py
 """
 

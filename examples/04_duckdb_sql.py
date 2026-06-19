@@ -1,7 +1,7 @@
 """Query Tessera partitions with DuckDB SQL.
 
 Run:
-    pip install "tessera-client[duckdb]"
+    pip install "tessera-api[duckdb]"
     python examples/04_duckdb_sql.py
 """
 

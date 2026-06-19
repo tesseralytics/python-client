@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "tessera-client"
+name = "tessera-api"
 description = "High-performance Python client for the Tessera API — Hyperliquid datasets straight into Polars & DuckDB."
 readme = "README.md"
 license = "MIT"
@@ -53,7 +53,7 @@ Issues = "https://github.com/tesseralytics/python-client/issues"
 polars = ["polars>=1.0"]
 duckdb = ["duckdb>=1.0"]
 pandas = ["pandas>=2.0", "pyarrow>=15.0"]
-all = ["tessera-client[polars,duckdb,pandas]"]
+all = ["tessera-api[polars,duckdb,pandas]"]
 
 [dependency-groups]
 dev = [

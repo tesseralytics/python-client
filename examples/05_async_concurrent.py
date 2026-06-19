@@ -3,7 +3,7 @@
 Presigned URLs for every (coin, month) are minted in parallel, then read.
 
 Run:
-    pip install "tessera-client[polars]"
+    pip install "tessera-api[polars]"
     python examples/05_async_concurrent.py
 """
 

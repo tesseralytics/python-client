@@ -3,7 +3,7 @@
 ## 1. Install & authenticate
 
 ```bash
-pip install "tessera-client[polars]"
+pip install "tessera-api[polars]"
 export TESSERA_API_KEY="sk_..."   # from https://tesseralytics.dev
 ```
 

@@ -24,7 +24,7 @@ jobs:
     # Configure a "pypi" environment with trusted publishing on PyPI.
     environment:
       name: pypi
-      url: https://pypi.org/p/tessera-client
+      url: https://pypi.org/p/tessera-api
     permissions:
       id-token: write  # OIDC — no API token needed
     steps:
