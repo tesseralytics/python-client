@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
@@ -74,7 +74,13 @@ docs = [
 ]
 
 [tool.hatch.version]
-path = "src/tessera/_version.py"
+source = "vcs"
+
+# Version is derived from the git tag (e.g. tag v0.1.1 -> 0.1.1). hatch-vcs
+# writes the resolved version into this file at build time; it is generated,
+# not hand-edited, and is gitignored.
+[tool.hatch.build.hooks.vcs]
+version-file = "src/tessera/_version.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/tessera"]
