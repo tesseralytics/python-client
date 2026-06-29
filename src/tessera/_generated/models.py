@@ -46,6 +46,12 @@ class Partition(BaseModel):
     coin: Annotated[
         str, Field(description='Coin symbol, e.g. `BTC`.', examples=['BTC'])
     ]
+    is_open: Annotated[
+        bool | None,
+        Field(
+            description='Whether this is the current, in-progress month — its parquet is\nre-materialised daily (part-month freshness) and therefore grows under\nthe customer. Absent (`None`) in older (v1) manifests.'
+        ),
+    ] = None
     modified_at: Annotated[
         str | None, Field(description='RFC3339 timestamp of the last write, if known.')
     ] = None
