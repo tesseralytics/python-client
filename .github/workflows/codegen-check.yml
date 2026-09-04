@@ -13,9 +13,9 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
       - run: uv sync --all-extras
@@ -24,7 +24,7 @@ jobs:
       - name: Regenerate models
         run: make codegen
       - name: Open a PR if the spec drifted
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           commit-message: "chore: sync models with updated Tessera OpenAPI spec"
           title: "Sync client with updated Tessera OpenAPI spec"
