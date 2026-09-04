@@ -13,7 +13,7 @@ No temp files, no `pandas` round-trips, no glue code.
 ```python
 import tessera
 
-client = tessera.TesseraClient()              # reads $TESSERA_API_KEY
+client = tessera.TesseraClient()  # reads $TESSERA_API_KEY
 df = client.read("gold_ohlcv_1m", "BTC", "2026-05")
 print(df.select("time", "close", "cvd").tail())
 ```

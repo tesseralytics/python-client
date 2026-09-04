@@ -73,6 +73,6 @@ Open-interest and crowd-positioning analytics (selected columns):
 ## Discovering coverage
 
 ```python
-client.partitions("gold_ohlcv_1m", coin="BTC")   # which months exist for BTC?
-client.datasets()                                  # coins + month range per dataset
+client.partitions("gold_ohlcv_1m", coin="BTC")  # which months exist for BTC?
+client.datasets()  # coins + month range per dataset
 ```

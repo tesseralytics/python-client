@@ -37,11 +37,7 @@ lf = client.scan(
     month=tessera.MonthSpan("2025-10", "2026-05"),
     columns=["time", "close"],
 )
-returns = (
-    lf.sort("time")
-    .with_columns(pl.col("close").pct_change().alias("ret"))
-    .collect()
-)
+returns = lf.sort("time").with_columns(pl.col("close").pct_change().alias("ret")).collect()
 ```
 
 Reading several coins at once adds a `coin` column so you can `group_by("coin")`.
