@@ -1,0 +1,21 @@
+version: 2
+updates:
+  # Runtime deps, optional extras, and dev/docs groups live in pyproject.toml
+  # + uv.lock. Dependabot resolves and rewrites the lockfile itself.
+  - package-ecosystem: "uv"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      python-deps:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      actions-deps:
+        patterns:
+          - "*"
