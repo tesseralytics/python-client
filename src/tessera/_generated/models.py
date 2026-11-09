@@ -127,7 +127,7 @@ class DayDownloadResponse(BaseModel):
     is_open: Annotated[
         bool,
         Field(
-            description='Whether this is the current, in-progress month. True for every\nday-backed partition today: a finalised month is compacted to one object.'
+            description='Whether this is the current, in-progress month. A finalised month is\ncompacted to one object, so `false` here means the month closed since the\nlast compaction: the data is complete, the layout is not yet folded.'
         ),
     ]
     month: str
@@ -212,7 +212,7 @@ class Partition(BaseModel):
     days: Annotated[
         list[str] | None,
         Field(
-            description='The `YYYY-MM-DD` day objects this partition is made of, when it is\n**day-backed**. The open month has no single object: it is one parquet per\nday until the month closes, and a download of it is one presigned URL per\nentry here. Absent (from a v5 and older manifest) means the partition is a\nsingle month object — the shape every finalised month has.'
+            description='The `YYYY-MM-DD` day objects this partition is made of, when it is\n**day-backed**. The open month has no single object: it is one parquet per\nday until the month closes, and a download of it is one presigned URL per\nentry here. Absent (from a v5 and older manifest) means the partition is a\nsingle month object — the shape every finalised month has once compacted.'
         ),
     ] = None
     is_open: Annotated[
