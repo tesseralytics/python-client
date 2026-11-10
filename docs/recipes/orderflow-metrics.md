@@ -12,7 +12,7 @@ with tessera.TesseraClient() as client:
     lf = client.scan(
         "gold_ohlcv_1m",
         coin="BTC",
-        month=tessera.MonthSpan("2026-01", "2026-05"),
+        month=tessera.MonthSpan("2026-09", "2026-10"),
         columns=["time", "close", "cvd", "aggressor_delta"],
     )
 

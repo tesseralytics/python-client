@@ -4,15 +4,21 @@ Tessera serves **gold** datasets — deduplicated, quality-checked, backtest-rea
 from raw Hyperliquid trade data. Each dataset is partitioned by `coin` and `month` (`YYYY-MM`),
 covers **October 2025 onward**, and every row carries a `time` (UTC `Datetime`) and `coin` column.
 
-| Dataset | Granularity | Tier | Contents |
-| --- | --- | --- | --- |
-| `gold_ohlcv_1m` | 1 minute | Free + Pro | Order-flow-enriched OHLCV candles |
-| `gold_funding_1h` | 1 hour | Pro | Funding rates |
-| `gold_positioning_1h` | 1 hour | Pro | Open-interest / positioning analytics |
+| Dataset | Granularity | Contents |
+| --- | --- | --- |
+| `gold_ohlcv_1m` | 1 minute | Order-flow-enriched OHLCV candles |
+| `gold_funding_1h` | 1 hour | Funding rates |
+| `gold_positioning_1h` | 1 hour | Open-interest / positioning analytics |
 
-**Free tier** covers BTC, ETH, SOL, HYPE. **Pro** unlocks every coin — 250+ symbols including
-HIP-3 markets and `xyz:`-prefixed equity/commodity perps (e.g. `xyz:NVDA`, `xyz:GOLD`) — plus the
-funding and positioning datasets. See [pricing](https://tesseralytics.dev).
+All three datasets are free over every market we carry — 250+ symbols including HIP-3 markets and
+`xyz:`-prefixed equity/commodity perps (e.g. `xyz:NVDA`, `xyz:GOLD`) — for the **trailing 30
+days**. That window is month-granular: the current and previous month objects are visible.
+
+Older history is sold as one-off download bundles rather than a subscription — closed months of
+all three datasets, frozen at purchase and perpetual. Scopes: Majors (BTC, ETH, SOL, HYPE, $19),
+HIP-3 xyz ($24), or All Markets ($29). See
+[pricing](https://tesseralytics.dev/pricing). Requesting a month outside your window returns
+`404`; call `client.partitions(...)` or `client.datasets()` to see what your account can reach.
 
 ## `gold_ohlcv_1m`
 

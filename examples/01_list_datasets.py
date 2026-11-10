@@ -1,4 +1,4 @@
-"""List every dataset your plan can see, with coverage.
+"""List every dataset your account can see, with coverage.
 
 Run:
     export TESSERA_API_KEY="sk_..."

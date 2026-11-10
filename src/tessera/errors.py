@@ -79,9 +79,11 @@ class AuthenticationError(TesseraAPIError):
 
 
 class ForbiddenError(TesseraAPIError):
-    """403 — your plan does not grant access to this dataset or coin.
+    """403 — the request is not permitted for your account.
 
-    Upgrade at https://tesseralytics.dev to unlock Pro datasets and all coins.
+    The free key reaches every dataset and every market, so this is not a tier
+    wall: history outside the trailing 30 days is purchased as a one-off bundle
+    and refuses with ``NotFoundError`` instead.
     """
 
 
