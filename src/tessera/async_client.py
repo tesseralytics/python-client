@@ -103,7 +103,7 @@ class AsyncTesseraClient:
 
     # -- metadata endpoints ------------------------------------------------
     async def datasets(self) -> DatasetsResponse:
-        """List every dataset visible to your plan."""
+        """List every dataset visible to your account."""
         response = await self._request(_base.datasets_request())
         return DatasetsResponse.model_validate_json(response.content)
 

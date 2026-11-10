@@ -37,6 +37,9 @@ export it:
 export TESSERA_API_KEY="sk_..."
 ```
 
+The free key reaches every dataset, every market and the trailing 30 days of history. Older
+months are available through a one-off download bundle — see [Pricing & history](#pricing--history).
+
 ## Quickstart
 
 ```python
@@ -50,18 +53,18 @@ for ds in client.datasets().datasets:
     print(ds.name, ds.coins, ds.months.earliest, "→", ds.months.latest)
 
 # One month of BTC minute candles → a Polars DataFrame. Read remotely, no temp files.
-df = client.read("gold_ohlcv_1m", "BTC", "2026-05")
+df = client.read("gold_ohlcv_1m", "BTC", "2026-10")
 print(df.select("time", "close", "cvd", "vwap").tail())
 
 # Lazy + pushdown: only the bytes you actually need cross the wire.
-lf = client.scan("gold_ohlcv_1m", "BTC", tessera.MonthSpan("2025-10", "2026-05"))
+lf = client.scan("gold_ohlcv_1m", "BTC", tessera.MonthSpan("2026-09", "2026-10"))
 big_prints = lf.filter(pl.col("aggressor_delta").abs() > 1_000).collect()
 ```
 
 Prefer SQL?
 
 ```python
-rel = client.to_duckdb("gold_ohlcv_1m", ["BTC", "ETH"], "2026-05")
+rel = client.to_duckdb("gold_ohlcv_1m", ["BTC", "ETH"], "2026-10")
 rel.filter("close > open").aggregate("coin, avg(cvd) AS mean_cvd, count(*) AS n", "coin").show()
 ```
 
@@ -77,15 +80,30 @@ Everything is `async`-native too — swap in `tessera.AsyncTesseraClient` and `a
 
 ## Datasets
 
-| Dataset | Granularity | Tier | Highlights |
-| --- | --- | --- | --- |
-| `gold_ohlcv_1m` | 1 minute | Free + Pro | OHLCV, CVD, aggressor delta, VWAP, fees |
-| `gold_funding_1h` | 1 hour | Pro | Funding rates |
-| `gold_positioning_1h` | 1 hour | Pro | Open-interest / positioning analytics |
+| Dataset | Granularity | Highlights |
+| --- | --- | --- |
+| `gold_ohlcv_1m` | 1 minute | OHLCV, CVD, aggressor delta, VWAP, fees |
+| `gold_funding_1h` | 1 hour | Funding rates |
+| `gold_positioning_1h` | 1 hour | Open-interest / positioning analytics |
 
-Free tier covers BTC, ETH, SOL, HYPE. Pro unlocks every coin (including HIP-3 markets) and the
-funding/positioning datasets. See **[the docs](https://tesseralytics.dev/python-client)** for the
-full column reference and recipes.
+All three datasets are free, over every market we carry — including HIP-3 markets and
+`xyz:`-prefixed equity/commodity perps — for the trailing 30 days. See
+**[the docs](https://tesseralytics.dev/python-client)** for the full column reference and recipes.
+
+## Pricing & history
+
+There is no subscription. The free tier is the product:
+
+- **Free — $0, no card.** All three datasets, every market, over the trailing 30 days (the current
+  and previous month objects). REST, presigned Parquet, and the Python client — no per-GB fee.
+- **History — one-off bundles, $19–$29.** Every closed month finalised at purchase, frozen and
+  perpetual, inherited by every key on your account. Three scopes:
+  - **Tessera Majors — $19 once:** BTC, ETH, SOL and HYPE.
+  - **Tessera HIP-3 (xyz) — $24 once:** every `xyz:` deployer market.
+  - **Tessera All Markets — $29 once:** every coin Tessera publishes.
+
+A month outside your window returns `404` — buy the bundle that covers it. Prices and scopes are
+set by **[the pricing page](https://tesseralytics.dev/pricing)**; this README is a summary.
 
 ## Documentation
 

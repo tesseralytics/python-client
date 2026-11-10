@@ -14,7 +14,7 @@ No temp files, no `pandas` round-trips, no glue code.
 import tessera
 
 client = tessera.TesseraClient()  # reads $TESSERA_API_KEY
-df = client.read("gold_ohlcv_1m", "BTC", "2026-05")
+df = client.read("gold_ohlcv_1m", "BTC", "2026-10")
 print(df.select("time", "close", "cvd").tail())
 ```
 
@@ -27,6 +27,23 @@ pip install "tessera-api[all]"         # polars + duckdb + pandas
 ```
 
 Get a free API key (no card required) at [tesseralytics.dev](https://tesseralytics.dev).
+
+## Pricing & history
+
+The free key is the product, not a sample: **$0, no card**, all three datasets over every market
+we carry — HIP-3 and `xyz:` perps included — for the trailing 30 days (the current and previous
+month objects). There is no subscription.
+
+History is the only paid axis. One-off bundles sell the closed months finalised at purchase,
+frozen and perpetual, with every key on your account inheriting the grant:
+
+| Bundle | Price (once) | Markets |
+| --- | --- | --- |
+| Tessera Majors | $19 | BTC, ETH, SOL, HYPE |
+| Tessera HIP-3 (xyz) | $24 | Every `xyz:` deployer market |
+| Tessera All Markets | $29 | Every coin Tessera publishes |
+
+A month older than your window returns `404`. See [pricing](https://tesseralytics.dev/pricing).
 
 ## Why it's fast
 

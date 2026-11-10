@@ -107,7 +107,7 @@ class TesseraClient:
 
     # -- metadata endpoints ------------------------------------------------
     def datasets(self) -> DatasetsResponse:
-        """List every dataset visible to your plan."""
+        """List every dataset visible to your account."""
         response = self._request(_base.datasets_request())
         return DatasetsResponse.model_validate_json(response.content)
 

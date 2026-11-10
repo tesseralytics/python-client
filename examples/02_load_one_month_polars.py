@@ -16,7 +16,7 @@ import tessera
 
 def main() -> None:
     with tessera.TesseraClient() as client:
-        df = client.read("gold_ohlcv_1m", "BTC", "2026-05")
+        df = client.read("gold_ohlcv_1m", "BTC", "2026-10")
 
     print(f"{df.height:,} rows x {df.width} columns")
     print(df.columns)

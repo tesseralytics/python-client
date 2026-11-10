@@ -12,7 +12,7 @@ import tessera
 
 def main() -> None:
     with tessera.TesseraClient() as client:
-        rel = client.to_duckdb("gold_ohlcv_1m", ["BTC", "ETH"], "2026-05")
+        rel = client.to_duckdb("gold_ohlcv_1m", ["BTC", "ETH"], "2026-10")
 
         # `rel` is a DuckDB relation — keep composing in SQL.
         summary = rel.aggregate(

@@ -21,7 +21,7 @@ async def main() -> None:
         df = await client.read(
             "gold_ohlcv_1m",
             coin=["BTC", "ETH", "SOL", "HYPE"],
-            month="2026-05",
+            month="2026-10",
             columns=["time", "close", "volume"],
         )
     by_coin = df.group_by("coin").agg(pl.col("volume").sum().alias("total_volume"))

@@ -31,12 +31,6 @@ class CatalogEntry(BaseModel):
         ),
     ]
     summary: Annotated[str, Field(description='One-line intuitive summary.')]
-    tier: Annotated[
-        str,
-        Field(
-            description='Display tier badge (`free` / `pro`), derived from the access policy.'
-        ),
-    ]
     title: Annotated[str, Field(description='Human-friendly title.')]
 
 
@@ -127,7 +121,7 @@ class DayDownloadResponse(BaseModel):
     is_open: Annotated[
         bool,
         Field(
-            description='Whether this is the current, in-progress month. True for every\nday-backed partition today: a finalised month is compacted to one object.'
+            description='Whether this is the current, in-progress month. A finalised month is\ncompacted to one object, so `false` here means the month closed since the\nlast compaction: the data is complete, the layout is not yet folded.'
         ),
     ]
     month: str
@@ -145,9 +139,10 @@ class DownloadResponse(BaseModel):
 class ErrorBody(BaseModel):
     """
     The error response body. Every error variant serialises to this shape —
-    a single machine-readable `error` code. Declared as a real struct (rather
-    than the inline `json!` below) only so it can be referenced as a response
-    `body` in the OpenAPI spec; `into_response` still emits the same JSON.
+    a single machine-readable `error` code, and nothing else. Declared as a real
+    struct (rather than the inline `json!` below) only so it can be referenced as
+    a response `body` in the OpenAPI spec; `into_response` still emits the same
+    JSON.
     """
 
     error: Annotated[
@@ -157,26 +152,6 @@ class ErrorBody(BaseModel):
             examples=['not_found'],
         ),
     ]
-    message: Annotated[
-        str | None,
-        Field(
-            description='One human sentence naming the upgrade. Absent on every other error.'
-        ),
-    ] = None
-    required_tier: Annotated[
-        str | None,
-        Field(
-            description='The plan that would serve the request, when the request was refused for\nplan reasons. Absent on every other error.',
-            examples=['pro'],
-        ),
-    ] = None
-    upgrade_url: Annotated[
-        str | None,
-        Field(
-            description='Where to upgrade. Absent on every other error.',
-            examples=['https://tesseralytics.dev/pricing'],
-        ),
-    ] = None
 
 
 class LowCoveragePartition(BaseModel):
@@ -212,7 +187,7 @@ class Partition(BaseModel):
     days: Annotated[
         list[str] | None,
         Field(
-            description='The `YYYY-MM-DD` day objects this partition is made of, when it is\n**day-backed**. The open month has no single object: it is one parquet per\nday until the month closes, and a download of it is one presigned URL per\nentry here. Absent (from a v5 and older manifest) means the partition is a\nsingle month object — the shape every finalised month has.'
+            description='The `YYYY-MM-DD` day objects this partition is made of, when it is\n**day-backed**. The open month has no single object: it is one parquet per\nday until the month closes, and a download of it is one presigned URL per\nentry here. Absent (from a v5 and older manifest) means the partition is a\nsingle month object — the shape every finalised month has once compacted.'
         ),
     ] = None
     is_open: Annotated[
@@ -361,12 +336,6 @@ class DatasetDoc(BaseModel):
             description='Machine-readable timestamp/interval contract: what the label marks and\nhow to join without leaking the future. Defaulted so snapshots predating\nthe field still deserialize.'
         ),
     ] = None
-    tier: Annotated[
-        str,
-        Field(
-            description='Display tier: `free` or `pro`. Re-derived from `policy.rs` on read, so it\nalways matches actual entitlement regardless of the on-disk value.'
-        ),
-    ]
     title: Annotated[
         str,
         Field(description='Human-friendly title, e.g. "Order-flow OHLCV (1-minute)".'),

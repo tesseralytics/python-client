@@ -13,6 +13,10 @@ The client reads `TESSERA_API_KEY` automatically. You can also pass it explicitl
 client = tessera.TesseraClient(api_key="sk_...")
 ```
 
+A free key reaches all three datasets over every market, for the trailing 30 days. Older months
+need a one-off download bundle; a month outside your window returns `404`. See
+[pricing](https://tesseralytics.dev/pricing).
+
 ## 2. Browse the catalog
 
 ```python
@@ -28,7 +32,7 @@ with tessera.TesseraClient() as client:
 A single partition into a Polars `DataFrame`:
 
 ```python
-df = client.read("gold_ohlcv_1m", "BTC", "2026-05")
+df = client.read("gold_ohlcv_1m", "BTC", "2026-10")
 ```
 
 Many partitions, lazily, with column projection and a pushed-down filter:
@@ -39,7 +43,7 @@ import polars as pl
 lf = client.scan(
     "gold_ohlcv_1m",
     coin=["BTC", "ETH"],
-    month=tessera.MonthSpan("2026-01", "2026-05"),
+    month=tessera.MonthSpan("2026-09", "2026-10"),
     columns=["time", "close", "cvd"],
 )
 df = lf.filter(pl.col("cvd") > 0).collect()
@@ -50,7 +54,7 @@ Multi-partition reads add `coin` and `month` columns so every row stays attribut
 ## 4. Or query with SQL
 
 ```python
-rel = client.to_duckdb("gold_ohlcv_1m", "BTC", "2026-05")
+rel = client.to_duckdb("gold_ohlcv_1m", "BTC", "2026-10")
 rel.filter("close > open").aggregate("count(*) AS green_minutes").show()
 ```
 
@@ -60,7 +64,7 @@ Every method has an `async` twin on `AsyncTesseraClient`:
 
 ```python
 async with tessera.AsyncTesseraClient() as client:
-    df = await client.read("gold_ohlcv_1m", ["BTC", "ETH"], "2026-05")
+    df = await client.read("gold_ohlcv_1m", ["BTC", "ETH"], "2026-10")
 ```
 
 ## A note on presigned URLs

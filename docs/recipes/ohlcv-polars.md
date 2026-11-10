@@ -8,7 +8,7 @@ import polars as pl
 import tessera
 
 with tessera.TesseraClient() as client:
-    df = client.read("gold_ohlcv_1m", "BTC", "2026-05")
+    df = client.read("gold_ohlcv_1m", "BTC", "2026-10")
 
 hourly = (
     df.sort("time")
@@ -34,7 +34,7 @@ reads:
 lf = client.scan(
     "gold_ohlcv_1m",
     coin="BTC",
-    month=tessera.MonthSpan("2025-10", "2026-05"),
+    month=tessera.MonthSpan("2026-09", "2026-10"),
     columns=["time", "close"],
 )
 returns = lf.sort("time").with_columns(pl.col("close").pct_change().alias("ret")).collect()
