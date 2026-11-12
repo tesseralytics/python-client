@@ -61,6 +61,7 @@ def download_urls(body: Download) -> list[str]:
         return urls
     return [body.url]
 
+
 _MONTH_RE = re.compile(r"^\d{4}-(0[1-9]|1[0-2])$")
 
 
