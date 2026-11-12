@@ -45,3 +45,26 @@ async def test_async_read_multi_partition(parquet_factory: Any, api_key: str) ->
         df = await client.read("gold_ohlcv_1m", ["BTC", "ETH"], "2025-09")
     assert df.height == 10
     assert set(df["coin"].unique()) == {"BTC", "ETH"}
+
+
+@respx.mock
+async def test_async_read_open_month(parquet_factory: Any, api_key: str) -> None:
+    urls = [parquet_factory("BTC", "2026-10-01", rows=2), parquet_factory("BTC", "2026-10-02")]
+    respx.get(f"{BASE_URL}/v1/datasets/gold_ohlcv_1m/BTC/2026-10/download").mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "asset": "gold_ohlcv_1m",
+                "coin": "BTC",
+                "month": "2026-10",
+                "is_open": True,
+                "days": [
+                    {"date": "2026-10-01", "url": urls[0], "expires_at": "t"},
+                    {"date": "2026-10-02", "url": urls[1], "expires_at": "t"},
+                ],
+            },
+        )
+    )
+    async with AsyncTesseraClient() as client:
+        df = await client.read("gold_ohlcv_1m", "BTC", "2026-10")
+    assert df.height == 7

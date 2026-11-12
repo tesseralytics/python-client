@@ -31,6 +31,13 @@ def _sql_str(value: str) -> str:
     return f"'{escaped}'"
 
 
+def _sql_url_list(urls: Sequence[str]) -> str:
+    """One path, or a DuckDB list literal of paths for a day-backed partition."""
+    if len(urls) == 1:
+        return _sql_str(urls[0])
+    return "[" + ", ".join(_sql_str(url) for url in urls) + "]"
+
+
 def _ensure_httpfs(con: duckdb.DuckDBPyConnection) -> None:
     # Recent DuckDB autoloads httpfs for https paths; load explicitly but don't
     # fail if the environment can't reach the extension repository.
@@ -56,12 +63,12 @@ def build_relation(
     multi = len(parts) > 1
     select_cols = ", ".join(columns) if columns else "*"
     selects: list[str] = []
-    for ref, url in parts:
+    for ref, urls in parts:
         projection = select_cols
         if multi:
             projection = (
                 f"{select_cols}, {_sql_str(ref.coin)} AS coin, {_sql_str(ref.month)} AS month"
             )
-        selects.append(f"SELECT {projection} FROM read_parquet({_sql_str(url)})")
+        selects.append(f"SELECT {projection} FROM read_parquet({_sql_url_list(urls)})")
     query = "\nUNION ALL\n".join(selects)
     return con.sql(query)

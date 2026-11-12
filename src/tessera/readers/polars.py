@@ -41,16 +41,17 @@ def build_lazyframe(
     pl = _polars()
     multi = len(parts) > 1
     frames: list[pl.LazyFrame] = []
-    for ref, url in parts:
-        lf = pl.scan_parquet(url)
-        if columns is not None:
-            lf = lf.select(columns)
-        if multi:
-            lf = lf.with_columns(
-                pl.lit(ref.coin).alias("coin"),
-                pl.lit(ref.month).alias("month"),
-            )
-        frames.append(lf)
+    for ref, urls in parts:
+        for url in urls:
+            lf = pl.scan_parquet(url)
+            if columns is not None:
+                lf = lf.select(columns)
+            if multi:
+                lf = lf.with_columns(
+                    pl.lit(ref.coin).alias("coin"),
+                    pl.lit(ref.month).alias("month"),
+                )
+            frames.append(lf)
     if len(frames) == 1:
         return frames[0]
     return pl.concat(frames, how="vertical_relaxed")

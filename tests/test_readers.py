@@ -22,10 +22,28 @@ def _download_route(coin: str, month: str, url: str) -> None:
     )
 
 
+def _day_download_route(coin: str, month: str, urls: list[str]) -> None:
+    respx.get(f"{BASE_URL}/v1/datasets/gold_ohlcv_1m/{coin}/{month}/download").mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "asset": "gold_ohlcv_1m",
+                "coin": coin,
+                "month": month,
+                "is_open": True,
+                "days": [
+                    {"date": f"{month}-{i + 1:02d}", "url": url, "expires_at": "t"}
+                    for i, url in enumerate(urls)
+                ],
+            },
+        )
+    )
+
+
 # -- reader unit tests -----------------------------------------------------
 def test_build_lazyframe_single_partition_is_pristine(parquet_factory: Any) -> None:
     url = parquet_factory("BTC", "2025-09")
-    lf = polars_reader.build_lazyframe([(PartitionRef("gold_ohlcv_1m", "BTC", "2025-09"), url)])
+    lf = polars_reader.build_lazyframe([(PartitionRef("gold_ohlcv_1m", "BTC", "2025-09"), [url])])
     df = lf.collect()
     assert "coin" not in df.columns  # no partition columns injected for a single partition
     assert df.height == 5
@@ -33,8 +51,8 @@ def test_build_lazyframe_single_partition_is_pristine(parquet_factory: Any) -> N
 
 def test_build_lazyframe_multi_partition_injects_columns(parquet_factory: Any) -> None:
     parts = [
-        (PartitionRef("gold_ohlcv_1m", "BTC", "2025-09"), parquet_factory("BTC", "2025-09")),
-        (PartitionRef("gold_ohlcv_1m", "ETH", "2025-09"), parquet_factory("ETH", "2025-09")),
+        (PartitionRef("gold_ohlcv_1m", "BTC", "2025-09"), [parquet_factory("BTC", "2025-09")]),
+        (PartitionRef("gold_ohlcv_1m", "ETH", "2025-09"), [parquet_factory("ETH", "2025-09")]),
     ]
     df = polars_reader.build_lazyframe(parts).collect()
     assert df.height == 10
@@ -45,7 +63,7 @@ def test_build_lazyframe_multi_partition_injects_columns(parquet_factory: Any) -
 def test_build_lazyframe_projection(parquet_factory: Any) -> None:
     url = parquet_factory("BTC", "2025-09")
     df = polars_reader.build_lazyframe(
-        [(PartitionRef("gold_ohlcv_1m", "BTC", "2025-09"), url)], columns=["time", "close"]
+        [(PartitionRef("gold_ohlcv_1m", "BTC", "2025-09"), [url])], columns=["time", "close"]
     ).collect()
     assert df.columns == ["time", "close"]
 
@@ -106,6 +124,17 @@ def test_client_read(parquet_factory: Any, api_key: str) -> None:
 
 
 @respx.mock
+def test_client_read_open_month_concatenates_days(parquet_factory: Any, api_key: str) -> None:
+    day_one = parquet_factory("BTC", "2026-10-01", rows=2)
+    day_two = parquet_factory("BTC", "2026-10-02", rows=3)
+    _day_download_route("BTC", "2026-10", [day_one, day_two])
+    with TesseraClient() as client:
+        df = client.read("gold_ohlcv_1m", "BTC", "2026-10")
+    assert df.height == 5
+    assert "coin" not in df.columns  # one logical partition, even with many day objects
+
+
+@respx.mock
 def test_client_read_multi_coin(parquet_factory: Any, api_key: str) -> None:
     _download_route("BTC", "2025-09", parquet_factory("BTC", "2025-09"))
     _download_route("ETH", "2025-09", parquet_factory("ETH", "2025-09"))
@@ -120,6 +149,17 @@ def test_client_to_duckdb(parquet_factory: Any, api_key: str) -> None:
     _download_route("BTC", "2025-09", parquet_factory("BTC", "2025-09"))
     with TesseraClient() as client:
         rel = client.to_duckdb("gold_ohlcv_1m", "BTC", "2025-09")
+        count = rel.aggregate("count(*) AS n").fetchone()
+    assert count is not None and count[0] == 5
+
+
+@respx.mock
+def test_client_to_duckdb_open_month(parquet_factory: Any, api_key: str) -> None:
+    day_one = parquet_factory("BTC", "2026-10-01", rows=2)
+    day_two = parquet_factory("BTC", "2026-10-02", rows=3)
+    _day_download_route("BTC", "2026-10", [day_one, day_two])
+    with TesseraClient() as client:
+        rel = client.to_duckdb("gold_ohlcv_1m", "BTC", "2026-10")
         count = rel.aggregate("count(*) AS n").fetchone()
     assert count is not None and count[0] == 5
 
