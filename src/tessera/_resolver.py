@@ -13,29 +13,29 @@ from concurrent.futures import ThreadPoolExecutor
 
 from .models import PartitionRef
 
-ResolvedPartition = tuple[PartitionRef, str]
+ResolvedPartition = tuple[PartitionRef, list[str]]
 
 _MAX_WORKERS = 8
 
 
 def resolve_sync(
-    fetch_url: Callable[[PartitionRef], str],
+    fetch_urls: Callable[[PartitionRef], list[str]],
     refs: Sequence[PartitionRef],
 ) -> list[ResolvedPartition]:
     """Resolve presigned URLs for ``refs`` concurrently, preserving order."""
     if len(refs) == 1:
         ref = refs[0]
-        return [(ref, fetch_url(ref))]
+        return [(ref, fetch_urls(ref))]
     workers = min(_MAX_WORKERS, len(refs))
     with ThreadPoolExecutor(max_workers=workers) as pool:
-        urls = list(pool.map(fetch_url, refs))
+        urls = list(pool.map(fetch_urls, refs))
     return list(zip(refs, urls, strict=True))
 
 
 async def resolve_async(
-    fetch_url: Callable[[PartitionRef], Awaitable[str]],
+    fetch_urls: Callable[[PartitionRef], Awaitable[list[str]]],
     refs: Sequence[PartitionRef],
 ) -> list[ResolvedPartition]:
     """Resolve presigned URLs for ``refs`` concurrently, preserving order."""
-    urls = await asyncio.gather(*(fetch_url(ref) for ref in refs))
+    urls = await asyncio.gather(*(fetch_urls(ref) for ref in refs))
     return list(zip(refs, urls, strict=True))

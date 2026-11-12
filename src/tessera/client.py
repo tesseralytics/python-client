@@ -10,15 +10,17 @@ from typing import TYPE_CHECKING
 import httpx
 
 from . import _base, _resolver
+from ._generated.models import DownloadBody
 from .config import DEFAULT_BASE_URL, ClientConfig, backoff_delay, resolve_api_key
 from .errors import NetworkError
 from .models import (
     Coins,
     DatasetsResponse,
-    DownloadResponse,
+    Download,
     Months,
     PartitionRef,
     PartitionsResponse,
+    download_urls,
 )
 from .readers import duckdb as _duckdb_reader
 from .readers import polars as _polars_reader
@@ -122,10 +124,15 @@ class TesseraClient:
         response = self._request(_base.partitions_request(asset, coin, month))
         return PartitionsResponse.model_validate_json(response.content)
 
-    def download_url(self, asset: str, coin: str, month: str) -> DownloadResponse:
-        """Mint a short-lived presigned download URL for one partition."""
+    def download_url(self, asset: str, coin: str, month: str) -> Download:
+        """Mint presigned download URLs for one partition.
+
+        A finalised month returns a single-object :class:`DownloadResponse`. The
+        open month is day-backed and returns a :class:`DayDownloadResponse`
+        carrying one URL per day object.
+        """
         response = self._request(_base.download_request(asset, coin, month))
-        return DownloadResponse.model_validate_json(response.content)
+        return DownloadBody.model_validate_json(response.content).root
 
     # -- partition helpers -------------------------------------------------
     def partition_refs(self, asset: str, coin: Coins, month: Months) -> list[PartitionRef]:
@@ -134,7 +141,7 @@ class TesseraClient:
 
     def _resolve(self, refs: Sequence[PartitionRef]) -> list[_resolver.ResolvedPartition]:
         return _resolver.resolve_sync(
-            lambda ref: self.download_url(ref.asset, ref.coin, ref.month).url,
+            lambda ref: download_urls(self.download_url(ref.asset, ref.coin, ref.month)),
             refs,
         )
 

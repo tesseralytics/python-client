@@ -9,8 +9,9 @@ from types import ModuleType
 from ..errors import MissingDependencyError
 from ..models import Coins, Months, PartitionRef, normalize_coins, normalize_months
 
-# A resolved partition: its reference plus a freshly-minted presigned URL.
-ResolvedPartition = tuple[PartitionRef, str]
+# A resolved partition: its reference plus one presigned URL per object. A
+# finalised month has one object; the day-backed open month has one per day.
+ResolvedPartition = tuple[PartitionRef, list[str]]
 
 
 def require(module: str, extra: str) -> ModuleType:

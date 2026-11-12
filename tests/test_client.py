@@ -6,7 +6,7 @@ import httpx
 import pytest
 import respx
 
-from tessera import ForbiddenError, NotFoundError, TesseraClient
+from tessera import DayDownloadResponse, ForbiddenError, NotFoundError, TesseraClient
 from tessera.errors import ConfigurationError
 from tests.conftest import API_KEY, BASE_URL
 
@@ -66,6 +66,28 @@ def test_download_url_requests_json(api_key: str) -> None:
     with TesseraClient() as client:
         resp = client.download_url("gold_ohlcv_1m", "BTC", "2025-09")
     assert resp.url == "https://tigris/x.parquet"
+    assert route.calls.last.request.headers["accept"] == "application/json"
+
+
+@respx.mock
+def test_download_url_open_month_returns_days(api_key: str) -> None:
+    body = {
+        "asset": "gold_ohlcv_1m",
+        "coin": "BTC",
+        "month": "2026-10",
+        "is_open": True,
+        "days": [
+            {"date": "2026-10-01", "url": "https://tigris/01.parquet", "expires_at": "t"},
+            {"date": "2026-10-02", "url": "https://tigris/02.parquet", "expires_at": "t"},
+        ],
+    }
+    route = respx.get(f"{BASE_URL}/v1/datasets/gold_ohlcv_1m/BTC/2026-10/download").mock(
+        return_value=httpx.Response(200, json=body)
+    )
+    with TesseraClient() as client:
+        resp = client.download_url("gold_ohlcv_1m", "BTC", "2026-10")
+    assert isinstance(resp, DayDownloadResponse)
+    assert [day.date for day in resp.days] == ["2026-10-01", "2026-10-02"]
     assert route.calls.last.request.headers["accept"] == "application/json"
 
 

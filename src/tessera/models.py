@@ -11,21 +11,28 @@ from __future__ import annotations
 import re
 from collections.abc import Iterator, Sequence
 from dataclasses import dataclass
+from typing import TypeAlias
 
 from ._generated.models import (
     DatasetsResponse,
     DatasetSummary,
+    DayDownload,
+    DayDownloadResponse,
     DownloadResponse,
     ErrorBody,
     MonthRange,
     Partition,
     PartitionsResponse,
 )
+from .errors import TesseraError
 
 __all__ = [
     "Coins",
     "DatasetSummary",
     "DatasetsResponse",
+    "DayDownload",
+    "DayDownloadResponse",
+    "Download",
     "DownloadResponse",
     "ErrorBody",
     "MonthRange",
@@ -34,7 +41,25 @@ __all__ = [
     "Partition",
     "PartitionRef",
     "PartitionsResponse",
+    "download_urls",
 ]
+
+# A download body: one object for a finalised month, or one object per day for
+# the day-backed open month.
+Download: TypeAlias = DownloadResponse | DayDownloadResponse
+
+
+def download_urls(body: Download) -> list[str]:
+    """Flatten either download shape into URLs, oldest day first."""
+    if isinstance(body, DayDownloadResponse):
+        urls = [day.url for day in sorted(body.days, key=lambda day: day.date)]
+        if not urls:
+            raise TesseraError(
+                f"Download of day-backed partition {body.asset}/{body.coin}/{body.month} "
+                "returned no day objects."
+            )
+        return urls
+    return [body.url]
 
 _MONTH_RE = re.compile(r"^\d{4}-(0[1-9]|1[0-2])$")
 

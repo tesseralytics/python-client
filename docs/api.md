@@ -20,6 +20,8 @@
 
 ::: tessera.DownloadResponse
 
+::: tessera.DayDownloadResponse
+
 ## Errors
 
 ::: tessera.errors

@@ -30,6 +30,8 @@ from .errors import (
 from .models import (
     DatasetsResponse,
     DatasetSummary,
+    DayDownload,
+    DayDownloadResponse,
     DownloadResponse,
     MonthRange,
     MonthSpan,
@@ -46,6 +48,8 @@ __all__ = [
     "DatasetSummary",
     # models & helpers
     "DatasetsResponse",
+    "DayDownload",
+    "DayDownloadResponse",
     "DownloadResponse",
     "ForbiddenError",
     "InternalServerError",
