@@ -301,7 +301,10 @@ class DatasetDoc(BaseModel):
         Field(description='Columns, grouped for presentation, in schema order.'),
     ]
     description: Annotated[
-        str, Field(description='Longer prose — the dictionary page header.')
+        str,
+        Field(
+            description='Longer prose: the narrative answer served by `/v1/catalog` and\n`describe_dataset`. The web drill-in leads with `direct_answer` and does\nnot repeat it.'
+        ),
     ]
     direct_answer: Annotated[
         str | None,
@@ -338,7 +341,9 @@ class DatasetDoc(BaseModel):
     ] = None
     title: Annotated[
         str,
-        Field(description='Human-friendly title, e.g. "Order-flow OHLCV (1-minute)".'),
+        Field(
+            description='Human-friendly title, e.g. "Hyperliquid 1-minute OHLCV data".'
+        ),
     ]
     use_case: Annotated[
         str | None,
